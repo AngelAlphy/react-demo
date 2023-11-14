@@ -1,16 +1,32 @@
-# action.yml
-name: 'Hello World'
-description: 'Greet someone and record the time'
-inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.who-to-greet }}
+# # action.yml
+# name: 'Hello World'
+# description: 'Greet someone and record the time'
+# inputs:
+#   who-to-greet:  # id of input
+#     description: 'Who to greet'
+#     required: true
+#     default: 'World'
+# outputs:
+#   time: # id of output
+#     description: 'The time we greeted you'
+# runs:
+#   using: 'docker'
+#   image: 'Dockerfile'
+#   args:
+#     - ${{ inputs.who-to-greet }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Output build artifacts to /github/workspace on the container.
+      - name: Containerized Build
+        uses: ./.github/actions/my-container-action
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace_artifacts
+          path: ${{ github.workspace }}
